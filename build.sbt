@@ -37,6 +37,7 @@ libraryDependencies += "com.chuusai" %% "shapeless" % "2.3.3"
 // only run wartremover on compile
 // don't run in console
 wartremoverErrors in (Compile, compile) ++= Warts.allBut(Wart.NonUnitStatements,
+                                                         Wart.Recursion,
                                                          Wart.PublicInference)
 wartremoverWarnings in (Compile, compile) ++= Seq(Wart.NonUnitStatements,
                                                   Wart.PublicInference)
@@ -78,4 +79,4 @@ wartremoverWarnings in (Compile, compile) ++= Seq(Wart.NonUnitStatements,
 
 // To learn more about multi-project builds, head over to the official sbt
 // documentation at http://www.scala-sbt.org/documentation.html
-mainClass in (Compile, run) := Some("Folds")
+mainClass in (Compile, run) := Some("Main")
