@@ -38,9 +38,12 @@ libraryDependencies += "com.chuusai" %% "shapeless" % "2.3.3"
 // don't run in console
 wartremoverErrors in (Compile, compile) ++= Warts.allBut(Wart.NonUnitStatements,
                                                          Wart.Recursion,
-                                                         Wart.PublicInference)
+                                                         Wart.PublicInference,
+                                                         Wart.AsInstanceOf)
 wartremoverWarnings in (Compile, compile) ++= Seq(Wart.NonUnitStatements,
-                                                  Wart.PublicInference)
+                                                  Wart.Recursion,
+                                                  Wart.PublicInference,
+                                                  Wart.AsInstanceOf)
 
 // You can use Scaladex, an index of all known published Scala libraries. There,
 // after you find the library you want, you can just copy/paste the dependency

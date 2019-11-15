@@ -4,23 +4,25 @@ sealed trait List[+A] {
   type N <: Nat
 }
 object List {
-  def add[A, N <: Nat](curr: List.Aux[A, N], other: List.Aux[A, N], f: (A, A) => A): List.Aux[A, N] =
-    (curr, other) match {
+  def add[A, N <: Nat](curr: List.Aux[A, N],
+                       other: List.Aux[A, N],
+                       f: (A, A) => A): List.Aux[A, N] =
+    ((curr, other) match {
       case (Cons(hc, tc), Cons(ho, to)) =>
         Cons(f(hc, ho), List.add(tc, to, f))
       case (Empty, Empty) => Empty
-      case _ => sys.error("yah fuck")
-    }
+    }).asInstanceOf[List.Aux[A, N]]
 
-  type Aux[A0, N0 <: Nat] = List[A0] {
-    type N = N0
-  }
+  type Aux[A0, N0 <: Nat] = List[A0] { type N = N0 }
 }
 
-sealed trait Empty extends List.Aux[Nothing, _0]
+sealed trait Empty extends List[Nothing]
 case object Empty extends Empty
 
-final case class Cons[A, N <: Nat](head: A, tail: List.Aux[A, N]) extends List.Aux[A, Succ[N]]
+final case class Cons[A, P <: Nat](head: A, tail: List.Aux[A, P])
+    extends List[A] {
+  type N = Succ[P]
+}
 
 object Main {
   def main(args: Array[String]): Unit = {
