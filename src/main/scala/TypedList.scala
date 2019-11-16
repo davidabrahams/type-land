@@ -36,6 +36,5 @@ object Main {
     val l3 = 1 :: 5 :: Empty
     val func = (a: Int, b: Int) => a + b
     println(List.add(l1, l3, func))
-    println("Failure!")
   }
 }
