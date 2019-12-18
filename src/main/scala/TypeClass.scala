@@ -1,13 +1,13 @@
-trait CanAdd[A] {
+trait Semigroup[A] {
   def plus(a: A, b: A): A
-  def apply(a: A, b: A): A = plus(a, b)
 }
-object CanAdd {
-  implicit def fromCanAddZ[A](implicit canAddZ: CanAddZ[A]): CanAdd[A] = canAddZ
-  def apply[A](implicit canAdd: CanAdd[A]): CanAdd[A] = canAdd
+object Monoid {
+  // If we have a Monoid[A], we also have a Semigroup[A]
+  implicit def fromCanAddZ[A](implicit canAddZ: CanAddZ[A]): Semigroup[A] = canAddZ
+  def apply[A](implicit canAdd: Semigroup[A]): Semigroup[A] = canAdd
 }
 
-trait CanAddZ[A] extends CanAdd[A]{
+trait CanAddZ[A] extends Semigroup[A]{
   def zero: A
 }
 object CanAddZ {
@@ -21,23 +21,20 @@ object CanAddZ {
     def plus(a: List[A], b: List[A]): List[A] = a++b
   }
 
-  implicit def canAddOptions[A: CanAdd]: CanAddZ[Option[A]] = new CanAddZ[Option[A]] {
+  implicit def canAddOptions[A: Monoid]: CanAddZ[Option[A]] = new CanAddZ[Option[A]] {
     def zero: Option[A] = None
-    def plus(a: Option[A], b: Option[A]): Option[A] = {
+    def plus(a: Option[A], b: Option[A]): Option[A] =
       (a, b) match {
         case (None, None) => None
         case (Some(v), None) => Some(v)
         case (None, Some(v)) => Some(v)
-        case (Some(v1), Some(v2)) => Some(CanAdd[A].plus(v1, v2))
+        case (Some(v1), Some(v2)) => Some(Semigroup[A].plus(v1, v2))
       }
-    }
   }
 }
 
 object TypeClass {
-  // def canAddOptionOfList[A]: CanAddZ[Option[List[A]]] = canAddOptions(canAddLists[A])
-
-  def add[A: CanAdd](a1: A, a2: A) = CanAdd[A].plus(a1, a2)
+  def add[A: Monoid](a1: A, a2: A) = Semigroup[A].plus(a1, a2)
 
   def main(args: Array[String]): Unit = {
     println("hello world")
