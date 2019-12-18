@@ -1,27 +1,27 @@
 trait Semigroup[A] {
   def plus(a: A, b: A): A
 }
-object Monoid {
+object Semigroup {
   // If we have a Monoid[A], we also have a Semigroup[A]
-  implicit def fromCanAddZ[A](implicit canAddZ: CanAddZ[A]): Semigroup[A] = canAddZ
-  def apply[A](implicit canAdd: Semigroup[A]): Semigroup[A] = canAdd
+  implicit def fromMonoid[A](implicit m: Monoid[A]): Semigroup[A] = m
+  def apply[A](implicit s: Semigroup[A]): Semigroup[A] = s
 }
 
-trait CanAddZ[A] extends Semigroup[A]{
+trait Monoid[A] extends Semigroup[A]{
   def zero: A
 }
-object CanAddZ {
-  implicit val canAddInts: CanAddZ[Int] = new CanAddZ[Int] {
+object Monoid {
+  implicit val intMonoid: Monoid[Int] = new Monoid[Int] {
     def zero: Int = 0
     def plus(a: Int, b: Int): Int = a+b
   }
 
-  implicit def canAddLists[A]: CanAddZ[List[A]] = new CanAddZ[List[A]] {
+  implicit def listMonoid[A]: Monoid[List[A]] = new Monoid[List[A]] {
     def zero: List[A] = List.empty[A]
     def plus(a: List[A], b: List[A]): List[A] = a++b
   }
 
-  implicit def canAddOptions[A: Monoid]: CanAddZ[Option[A]] = new CanAddZ[Option[A]] {
+  implicit def optionMonoid[A: Semigroup]: Monoid[Option[A]] = new Monoid[Option[A]] {
     def zero: Option[A] = None
     def plus(a: Option[A], b: Option[A]): Option[A] =
       (a, b) match {
@@ -34,7 +34,7 @@ object CanAddZ {
 }
 
 object TypeClass {
-  def add[A: Monoid](a1: A, a2: A) = Semigroup[A].plus(a1, a2)
+  def add[A: Semigroup](a1: A, a2: A) = Semigroup[A].plus(a1, a2)
 
   def main(args: Array[String]): Unit = {
     println("hello world")
