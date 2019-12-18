@@ -34,7 +34,7 @@ object Monoid {
 }
 
 object TypeClass {
-  def add[A: Semigroup](a1: A, a2: A) = Semigroup[A].plus(a1, a2)
+  def add[A: Semigroup](a1: A, a2: A): A = Semigroup[A].plus(a1, a2)
 
   def main(args: Array[String]): Unit = {
     println("hello world")
